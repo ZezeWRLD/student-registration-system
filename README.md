@@ -148,15 +148,6 @@ composer require laravel/breeze --dev
 php artisan breeze:install blade
 npm install && npm run dev
 ```
-
----
-
-## ✅ Installation Scripts Included
-- `install.sh` (macOS/Linux): Installs Composer & npm deps, sets up `.env`, generates app key, runs migrations, and starts Vite + Laravel servers.
-- `install.ps1` (Windows PowerShell): Same flow tailored for Windows.
-
-> These scripts assume MySQL is running and credentials in `.env` are correct.
-
 ---
 
 ## 📄 License
