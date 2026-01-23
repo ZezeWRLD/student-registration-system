@@ -65,23 +65,7 @@ Make sure you have:
 
 ---
 
-## ▶️ Quick Start
-
-### Option A: One liner install script (macOS/Linux)
-```bash
-curl -sSL https://raw.githubusercontent.com/your-org/your-repo/main/install.sh | bash
-```
-
-### Option B: PowerShell install (Windows)
-```powershell
-irm https://raw.githubusercontent.com/your-org/your-repo/main/install.ps1 | iex
-```
-
-> Replace `your-org/your-repo` with your actual GitHub path, or run the local scripts included in this repo: `./install.sh` (macOS/Linux) or `./install.ps1` (Windows PowerShell).
-
----
-
-## ▶️ Run Manually (without scripts)
+## ▶️ Run App
 ```bash
 # 1) Install PHP deps
 composer install
