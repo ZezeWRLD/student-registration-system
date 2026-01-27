@@ -48,7 +48,7 @@
                     </tr>
                 </thead>
                 @foreach($students as $student)
-                    <x-student-card-wide :student="$student" />
+                    <x-student-card-wide :student="$student" :teachers="$teachers" />
                 @endforeach
             </table>
         </div>

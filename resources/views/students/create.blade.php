@@ -37,8 +37,12 @@
                     </div>
 
                     <div class="space-y-1">
-                    <label for="teachername" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Name of Teacher :<span class="text-red-500 ml-1">*</span></label>
-                    <input type="text" id="teachername" name="teachername" placeholder="Enter teacher name..." class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white" required minlength="3" />
+                    <label for="teacher_id" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Name of Teacher :<span class="text-red-500 ml-1">*</span></label>
+                    <select id="teacher_id" name="teacher_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white" required>
+                        <option value="" disabled selected>Select a teacher</option>
+                        @foreach($teachers as $teacher)
+                            <option value="{{ $teacher->id }}">{{ $teacher->name }} {{ $teacher->surname }}</option>
+                        @endforeach
                     </div>
 
                     <div class="space-y-1">

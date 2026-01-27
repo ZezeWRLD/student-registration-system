@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Student;
+use App\Models\Teacher;
 use Illuminate\Http\Request;
 //File generated with artisan command: php artisan make:controller *filename* --model=Student --resource
 class StudentController extends Controller
@@ -12,9 +13,10 @@ class StudentController extends Controller
      */
     public function index()
     {
+        $teachers = Teacher::all();
         //selects all students from the database and returns them a collection
-       $students = Student::all();
-       return view("students.index", compact("students"));
+       $students = Student::paginate(10);
+       return view("students.index", compact("students", "teachers"));
     }
 
     /**
@@ -22,7 +24,8 @@ class StudentController extends Controller
      */
     public function create()
     {
-        return view("students.create");
+        $teachers = Teacher::all();
+        return view("students.create", compact("teachers"));
     }
 
     /**
@@ -33,7 +36,7 @@ class StudentController extends Controller
         $request->validate([
          "name"=> "required|string|max:255",
          "grade"=> "required|integer|min:1|max:12",
-         "teachername"=> "required|string|max:255",
+         "teacher_id"=> "required|integer|exists:teachers,id",
          "interests" => "required|string|max:500",
         ]);
         //trys to create a new instance of student, initialize values, and save the new student; failure returns an error
@@ -41,7 +44,7 @@ class StudentController extends Controller
             $student = new Student;
             $student->name = $request->input('name');
             $student->grade = $request->input('grade');
-            $student->teachername = $request->input('teachername');
+            $student->teacher_id = $request->input('teacher_id');
             $student->interests = $request->input('interests');
 
             $student->save();
@@ -57,7 +60,8 @@ class StudentController extends Controller
      */
     public function show(Student $student)
     {
-        return view('students.show', compact('student'));
+        $teachers = Teacher::all();
+        return view('students.show', compact('student', 'teachers'));
     }
 
     /**
@@ -65,7 +69,9 @@ class StudentController extends Controller
      */
     public function edit(Student $student)
     {
-        return view('students.edit', compact('student'));
+        $oldteacher = Teacher::find($student->teacher_id);
+        $teachers = Teacher::all();
+        return view('students.edit', compact('student', 'teachers', 'oldteacher'));
     }
 
     /**
@@ -76,7 +82,7 @@ class StudentController extends Controller
          $request->validate([
          "name"=> "required|string|max:255",
          "grade"=> "required|integer|min:1| max:12",
-         "teachername"=> "required|string|max:255",
+         "teacher_id"=> "required|integer|exists:teachers,id",
          "interests" => "required|string|max:500",
         ]);
 
@@ -84,7 +90,7 @@ class StudentController extends Controller
         try{
         $student->name = $request->input('name');
         $student->grade = $request->input('grade');
-        $student->teachername = $request->input('teachername');
+        $student->teacher_id = $request->input('teacher_id');
         $student->interests = $request->input('interests');
         $student->save();
         }catch(\Exception $e){

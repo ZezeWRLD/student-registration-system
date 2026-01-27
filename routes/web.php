@@ -10,8 +10,7 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    $students = Student::all();
-    return view('dashboard',compact('students'));
+    return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {

@@ -9,7 +9,7 @@
                     {{ $student->grade }}
                 </td>
                 <td class="px-6 py-4">
-                    {{ $student->teachername }}
+                    {{ $teachers->where('id', $student->teacher_id)->first()->name }} {{ $teachers->where('id', $student->teacher_id)->first()->surname }}
                 </td>
                 <td class="px-6 py-4">
                     {{ $student->interests }}
