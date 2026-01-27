@@ -43,6 +43,7 @@
                         @foreach($teachers as $teacher)
                             <option value="{{ $teacher->id }}">{{ $teacher->name }} {{ $teacher->surname }}</option>
                         @endforeach
+                    </select>
                     </div>
 
                     <div class="space-y-1">
@@ -51,7 +52,7 @@
                     </div>
 
                     <div>
-                    <button type="submit" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900">Add Student</button>
+                    <button type="submit" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 dark:bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 dark:hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800">Add Student</button>
                     </div>
                 </form>
 
