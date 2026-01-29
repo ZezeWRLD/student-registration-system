@@ -24,7 +24,6 @@
                     <!-- Create Form -->
                     <form action="{{ route('students.store') }}" method="POST" class="space-y-6">
                     @csrf
-                    @method('POST')
 
                     <div class="space-y-1">
                     <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Name:<span class="text-red-500 ml-1">*</span></label>

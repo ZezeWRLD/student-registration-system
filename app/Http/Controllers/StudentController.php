@@ -41,16 +41,19 @@ class StudentController extends Controller
         ]);
         //trys to create a new instance of student, initialize values, and save the new student; failure returns an error
         try{
-            $student = new Student;
+            $student = new Student();
             $student->name = $request->input('name');
             $student->grade = $request->input('grade');
             $student->teacher_id = $request->input('teacher_id');
             $student->interests = $request->input('interests');
 
             $student->save();
+
         }catch(\Exception $e){
             return back()->with("error", $e->getMessage());
         }
+
+
         //upon successfull saving/creation/storing the user is redirected to a show view where they can view the student they created
         return redirect()->route('students.show',$student)->with('success','Student created successfully');
     }

@@ -5,6 +5,10 @@ use App\Http\Controllers\StudentController;
 use App\Models\Student;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/_boost/browser-logs', function () {
+    return response()->json(['status' => 'ok']);
+})->name('boost.browser-logs.status');
+
 Route::get('/', function () {
     return view('welcome');
 });

@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->integer('grade');
-            $table->foreignId('teachers_id')->constrained()->onDelete('cascade');
+            $table->foreignId('teacher_id')->constrained()->onDelete('cascade');
             $table->string('interests');
             $table->timestamps();
 
-            $table->index('teachers_id');
+            $table->index('teacher_id');
         });
     }
 
