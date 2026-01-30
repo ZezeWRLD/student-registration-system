@@ -4,7 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Student;
 use App\Models\Teacher;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\StudentMail;
+
 //File generated with artisan command: php artisan make:controller *filename* --model=Student --resource
 class StudentController extends Controller
 {
@@ -53,6 +57,12 @@ class StudentController extends Controller
             return back()->with("error", $e->getMessage());
         }
 
+        //sends an email notification upon successful creation of a new student
+        try{
+            Mail::to(user()->email)->send(new StudentMail($student, 'created'));
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Failed to send student creation email: ' . $e->getMessage());
+        }
 
         //upon successfull saving/creation/storing the user is redirected to a show view where they can view the student they created
         return redirect()->route('students.show',$student)->with('success','Student created successfully');
@@ -99,6 +109,13 @@ class StudentController extends Controller
         }catch(\Exception $e){
             return back()->with('error', $e->getMessage());
         }
+        //sends an email notification upon successful update of a student
+          try{
+            Mail::to(user()->email)->send(new StudentMail($student, 'updated'));
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Failed to send student update email: ' . $e->getMessage());
+        }
+
         //User redirected to a view showing the updated student
         return redirect()->route('students.show', $student)->with('success','Student updated successfully');
     }
@@ -108,7 +125,18 @@ class StudentController extends Controller
      */
     public function destroy(Student $student)
     {//Student is deleted; alternatvely a soft delete should be used but this was the easiest to do without creating additional tables
-       $student->delete();
+        $studentData = $student->toArray();
+        $student->delete();
+        //sends an email notification upon successful deletion of a student
+        $dummyStudent = (object) [
+            'name' => $studentData['name'],
+        ];
+
+        try{
+            Mail::to(user()->email)->send(new StudentMail($dummyStudent, 'deleted'));
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Failed to send student deletion email: ' . $e->getMessage());
+        }
 
         return redirect()->route('students.index')->with('success','Student deleted successfully');
     }
