@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Student;
 use App\Models\Teacher;
 use Illuminate\Http\Request;
+use App\Http\Requests;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
+
 //File generated with artisan command: php artisan make:controller *filename* --model=Student --resource
 class StudentController extends Controller
 {
@@ -15,8 +19,8 @@ class StudentController extends Controller
     {
         $teachers = Teacher::all();
         //selects all students from the database and returns them a collection
-       $students = Student::paginate(10);
-       return view("students.index", compact("students", "teachers"));
+        $students = Student::paginate(10);
+        return view("students.index", compact("students", "teachers"));
     }
 
     /**
@@ -31,30 +35,17 @@ class StudentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {  //checks if the request body data meets requirments before saving them into the database
-        $request->validate([
-         "name"=> "required|string|max:255",
-         "grade"=> "required|integer|min:1|max:12",
-         "teacher_id"=> "required|integer|exists:teachers,id",
-         "interests" => "required|string|max:500",
-        ]);
-        //trys to create a new instance of student, initialize values, and save the new student; failure returns an error
-        try{
-            $student = new Student();
+    public function store(StoreUserRequest $request)
+    {  //checks if the request body data meets requirements before saving them into the database
+            $student = Student::create($request->validated());
+
             $student->name = $request->input('name');
             $student->grade = $request->input('grade');
             $student->teacher_id = $request->input('teacher_id');
             $student->interests = $request->input('interests');
-
             $student->save();
 
-        }catch(\Exception $e){
-            return back()->with("error", $e->getMessage());
-        }
-
-
-        //upon successfull saving/creation/storing the user is redirected to a show view where they can view the student they created
+        //upon successful saving/creation/storing the user is redirected to a show view where they can view the student they created
         return redirect()->route('students.show',$student)->with('success','Student created successfully');
     }
 
@@ -63,42 +54,35 @@ class StudentController extends Controller
      */
     public function show(Student $student)
     {
-        $teachers = Teacher::all();
-        return view('students.show', compact('student', 'teachers'));
+        // $teachers = Teacher::all();
+        $student::with('teacher')->get();
+        return view('students.show', compact('student'));
     }
-
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(Student $student)
     {
-        $oldteacher = Teacher::find($student->teacher_id);
+        $student::with('teacher')->get();
         $teachers = Teacher::all();
-        return view('students.edit', compact('student', 'teachers', 'oldteacher'));
+        return view('students.edit', compact('student', 'teachers'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Student $student)
-    {   //Validation proccess is the same as the store function, refer to the store function
-         $request->validate([
-         "name"=> "required|string|max:255",
-         "grade"=> "required|integer|min:1| max:12",
-         "teacher_id"=> "required|integer|exists:teachers,id",
-         "interests" => "required|string|max:500",
-        ]);
-
+    public function update(UpdateUserRequest $request, Student $student)
+    {   //Validation process is the same as the store function, refer to the store function
+        if ($request->validated() === false) {
+            return redirect()->back()->withErrors($request->errors())->withInput();
+        }
         //after validation, the current student information is changed to the incoming changes from the request body same try-catch logic from store function
-        try{
         $student->name = $request->input('name');
         $student->grade = $request->input('grade');
         $student->teacher_id = $request->input('teacher_id');
         $student->interests = $request->input('interests');
         $student->save();
-        }catch(\Exception $e){
-            return back()->with('error', $e->getMessage());
-        }
+
         //User redirected to a view showing the updated student
         return redirect()->route('students.show', $student)->with('success','Student updated successfully');
     }
@@ -107,8 +91,8 @@ class StudentController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy(Student $student)
-    {//Student is deleted; alternatvely a soft delete should be used but this was the easiest to do without creating additional tables
-       $student->delete();
+    {//Student is deleted; alternatively a soft delete should be used but this was the easiest to do without creating additional tables
+        $student->delete();
 
         return redirect()->route('students.index')->with('success','Student deleted successfully');
     }
