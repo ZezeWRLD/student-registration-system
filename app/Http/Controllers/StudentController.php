@@ -60,7 +60,7 @@ class StudentController extends Controller
 
         //sends an email notification upon successful creation of a new student
         try{
-            Mail::to(user()->email)->send(new StudentMail($student, 'created'));
+            Mail::to($request->user()->email)->send(new StudentMail($student, 'created'));
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Failed to send student creation email: ' . $e->getMessage());
         }
@@ -112,7 +112,7 @@ class StudentController extends Controller
         }
         //sends an email notification upon successful update of a student
           try{
-            Mail::to(user()->email)->send(new StudentMail($student, 'updated'));
+            Mail::to($request->user()->email)->send(new StudentMail($student, 'updated'));
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Failed to send student update email: ' . $e->getMessage());
         }
@@ -124,7 +124,7 @@ class StudentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Student $student)
+    public function destroy(Request $request, Student $student)
     {//Student is deleted; alternatvely a soft delete should be used but this was the easiest to do without creating additional tables
         $studentData = $student->toArray();
         $student->delete();
@@ -134,7 +134,7 @@ class StudentController extends Controller
         ];
 
         try{
-            Mail::to(user()->email)->send(new StudentMail($dummyStudent, 'deleted'));
+            Mail::to($request->user()->email)->send(new StudentMail($dummyStudent, 'deleted'));
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Failed to send student deletion email: ' . $e->getMessage());
         }
