@@ -7,6 +7,10 @@ use App\Models\User;
 use App\Models\Teacher;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Http\Requests;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
+
 use Illuminate\Support\Facades\Mail;
 use App\Mail\StudentMail;
 
@@ -20,8 +24,8 @@ class StudentController extends Controller
     {
         $teachers = Teacher::all();
         //selects all students from the database and returns them a collection
-       $students = Student::paginate(10);
-       return view("students.index", compact("students", "teachers"));
+        $students = Student::paginate(10);
+        return view("students.index", compact("students", "teachers"));
     }
 
     /**
@@ -36,28 +40,15 @@ class StudentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {  //checks if the request body data meets requirments before saving them into the database
-        $request->validate([
-         "name"=> "required|string|max:255",
-         "grade"=> "required|integer|min:1|max:12",
-         "teacher_id"=> "required|integer|exists:teachers,id",
-         "interests" => "required|string|max:500",
-        ]);
-        //trys to create a new instance of student, initialize values, and save the new student; failure returns an error
-        try{
-            $student = new Student();
+    public function store(StoreUserRequest $request)
+    {  //checks if the request body data meets requirements before saving them into the database
+            $student = Student::create($request->validated());
+
             $student->name = $request->input('name');
             $student->grade = $request->input('grade');
             $student->teacher_id = $request->input('teacher_id');
             $student->interests = $request->input('interests');
-
             $student->save();
-
-        }catch(\Exception $e){
-            return back()->with("error", $e->getMessage());
-        }
-
         //sends an email notification upon successful creation of a new student
         try{
             Mail::to($request->user()->email)->send(new StudentMail($student, 'created'));
@@ -74,44 +65,37 @@ class StudentController extends Controller
      */
     public function show(Student $student)
     {
-        $teachers = Teacher::all();
-        return view('students.show', compact('student', 'teachers'));
+        // $teachers = Teacher::all();
+        $student::with('teacher')->get();
+        return view('students.show', compact('student'));
     }
-
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(Student $student)
     {
-        $oldteacher = Teacher::find($student->teacher_id);
+        $student::with('teacher')->get();
         $teachers = Teacher::all();
-        return view('students.edit', compact('student', 'teachers', 'oldteacher'));
+        return view('students.edit', compact('student', 'teachers'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Student $student)
-    {   //Validation proccess is the same as the store function, refer to the store function
-         $request->validate([
-         "name"=> "required|string|max:255",
-         "grade"=> "required|integer|min:1| max:12",
-         "teacher_id"=> "required|integer|exists:teachers,id",
-         "interests" => "required|string|max:500",
-        ]);
-
+    public function update(UpdateUserRequest $request, Student $student)
+    {   //Validation process is the same as the store function, refer to the store function
+        if ($request->validated() === false) {
+            return redirect()->back()->withErrors($request->errors())->withInput();
+        }
         //after validation, the current student information is changed to the incoming changes from the request body same try-catch logic from store function
-        try{
         $student->name = $request->input('name');
         $student->grade = $request->input('grade');
         $student->teacher_id = $request->input('teacher_id');
         $student->interests = $request->input('interests');
         $student->save();
-        }catch(\Exception $e){
-            return back()->with('error', $e->getMessage());
-        }
+
         //sends an email notification upon successful update of a student
-          try{
+        try{
             Mail::to($request->user()->email)->send(new StudentMail($student, 'updated'));
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Failed to send student update email: ' . $e->getMessage());
