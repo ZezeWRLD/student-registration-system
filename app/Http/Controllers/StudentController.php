@@ -56,7 +56,7 @@ class StudentController extends Controller
             \Illuminate\Support\Facades\Log::error('Failed to send student creation email: ' . $e->getMessage());
         }
 
-        //upon successfull saving/creation/storing the user is redirected to a show view where they can view the student they created
+        //upon successful saving/creation/storing the user is redirected to a show view where they can view the student they created
         return redirect()->route('students.show',$student)->with('success','Student created successfully');
     }
 
@@ -109,7 +109,7 @@ class StudentController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy(Request $request, Student $student)
-    {//Student is deleted; alternatvely a soft delete should be used but this was the easiest to do without creating additional tables
+    {//Student is deleted; alternatively a soft delete should be used but this was the easiest to do without creating additional tables
         $studentData = $student->toArray();
         $student->delete();
         //sends an email notification upon successful deletion of a student
