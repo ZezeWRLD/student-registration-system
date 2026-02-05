@@ -32,8 +32,8 @@ class StudentMail extends Mailable
     {
         $subject = match ($this->action) {
             'created' => 'New Student Created: ' . $this->student->name,
-            'updated' => 'Student Information Updated'. $this->student->name,
-            'deleted' => 'Student Information Updated'. $this->student->name,
+            'updated' => 'Student Information Updated: '. $this->student->name,
+            'deleted' => 'Student Information Deleted: '. $this->student->name,
             default => 'Student Notification',
         };
         return new Envelope(

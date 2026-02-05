@@ -110,15 +110,12 @@ class StudentController extends Controller
      */
     public function destroy(Request $request, Student $student)
     {//Student is deleted; alternatively a soft delete should be used but this was the easiest to do without creating additional tables
-        $studentData = $student->toArray();
+        $studentData = $student;
         $student->delete();
         //sends an email notification upon successful deletion of a student
-        $dummyStudent = (object) [
-            'name' => $studentData['name'],
-        ];
 
         try{
-            Mail::to($request->user()->email)->send(new StudentMail($dummyStudent, 'deleted'));
+            Mail::to($request->user()->email)->send(new StudentMail($studentData, 'deleted'));
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Failed to send student deletion email: ' . $e->getMessage());
         }
