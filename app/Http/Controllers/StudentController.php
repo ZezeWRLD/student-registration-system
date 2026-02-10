@@ -83,10 +83,7 @@ class StudentController extends Controller
      * Update the specified resource in storage.
      */
     public function update(UpdateUserRequest $request, Student $student)
-    {   //Validation process is the same as the store function, refer to the store function
-        if ($request->validated() === false) {
-            return redirect()->back()->withErrors($request->errors())->withInput();
-        }
+    {
         //after validation, the current student information is changed to the incoming changes from the request body same try-catch logic from store function
         $student->name = $request->input('name');
         $student->grade = $request->input('grade');
