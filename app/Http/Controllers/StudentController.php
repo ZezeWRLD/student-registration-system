@@ -10,10 +10,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-
+use App\Notifications\StudentMail;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\StudentMail;
-
 //File generated with artisan command: php artisan make:controller *filename* --model=Student --resource
 class StudentController extends Controller
 {
@@ -57,7 +55,7 @@ class StudentController extends Controller
             $student->save();
         //sends an email notification upon successful creation of a new student
         try{
-            Mail::to($request->user()->email)->send(new StudentMail($student, 'created'));
+            $request->user()->notify(new StudentMail($student, 'created'));
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Failed to send student creation email: ' . $e->getMessage());
         }
@@ -99,7 +97,7 @@ class StudentController extends Controller
 
         //sends an email notification upon successful update of a student
         try{
-            Mail::to($request->user()->email)->send(new StudentMail($student, 'updated'));
+            $request->user()->notify(new StudentMail($student, 'updated'));
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Failed to send student update email: ' . $e->getMessage());
         }
@@ -118,7 +116,7 @@ class StudentController extends Controller
         //sends an email notification upon successful deletion of a student
 
         try{
-            Mail::to($request->user()->email)->send(new StudentMail($studentData, 'deleted'));
+            $request->user()->notify(new StudentMail($student, 'deleted'));
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Failed to send student deletion email: ' . $e->getMessage());
         }
