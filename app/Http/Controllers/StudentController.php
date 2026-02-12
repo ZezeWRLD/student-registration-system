@@ -28,6 +28,12 @@ class StudentController extends Controller
         return view("students.index", compact("students", "teachers"));
     }
 
+    public function recent(){
+        $students = Student::paginate(5)->sortByDesc('created_at');
+
+        return $students;
+    }
+
     /**
      * Show the form for creating a new resource.
      */
