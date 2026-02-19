@@ -18,11 +18,17 @@ class StudentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $teachers = Teacher::all();
         //selects all students from the database and returns them a collection
-        $students = Student::paginate(10);
+        $students = Student::when($request->has('name'), fn ($query) =>
+        $query->where('name', 'like', '%' . $request->input('name') . '%'))
+        ->when(request()->has('grade'), fn ($query) =>
+        $query->where('grade', $request->input('grade')))
+        ->when(request()->has('teacher_id'), fn ($query) =>
+        $query->where('teacher_id', $request->input('teacher_id')))
+        ->paginate(10);
         return view("students.index", compact("students", "teachers"));
     }
 
