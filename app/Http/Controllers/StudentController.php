@@ -28,8 +28,10 @@ class StudentController extends Controller
         $query->where('grade', $request->input('grade')))
         ->when(request()->has('teacher_id'), fn ($query) =>
         $query->where('teacher_id', $request->input('teacher_id')))
-        ->paginate(10);
-        return view("students.index", compact("students", "teachers"));
+        ->paginate(10)
+        ->appends(request()->query());
+        $query=(object) $request->query();
+        return view("students.index", compact("students", "teachers", "query"));
     }
 
     public function recent(){

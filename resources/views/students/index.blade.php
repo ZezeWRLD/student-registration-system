@@ -85,7 +85,7 @@
 
                                 @if(request('name') || request('grade') || request('teacher_id'))
                                     <a href="{{ route('students.index') }}"
-                                       class="inline-flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-3 py-1.5 text-sm font-medium rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition shadow-sm">
+                                    class="inline-flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-3 py-1.5 text-sm font-medium rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition shadow-sm">
                                         Clear
                                     </a>
                                 @endif
@@ -144,6 +144,7 @@
                 @endforeach
                 @endif
             </table>
+            {{ $students->links() }}
         </div>
         </section>
     </main>

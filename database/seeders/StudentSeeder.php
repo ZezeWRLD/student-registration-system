@@ -19,7 +19,7 @@ class StudentSeeder extends Seeder
         DB::table('students')->insert([
             'name' => 'Test User',
             'grade' => '11',
-            'teachername' => 'Lindo',
+            'teacher_id' => 1,
             'interests'=> 'goofing and dily daling around',
         ]);
 
